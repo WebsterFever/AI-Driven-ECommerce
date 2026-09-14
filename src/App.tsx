@@ -1,11 +1,7 @@
+import { AppRouter } from './routes/AppRouter'
+
 function App() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-white">
-      <h1 className="text-2xl font-bold text-red-500 underline">
-        Tailwind funcionando
-      </h1>
-    </div>
-  )
+  return <AppRouter />
 }
 
 export default App
