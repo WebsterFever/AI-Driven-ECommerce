@@ -3,6 +3,7 @@ import CategoryFilter, {
   type CategoryFilterValue,
 } from '../components/products/CategoryFilter'
 import ProductCard from '../components/products/ProductCard'
+import { useDebounce } from '../hooks/useDebounce'
 import { useProducts } from '../hooks/useProducts'
 
 function Home() {
@@ -14,12 +15,24 @@ function Home() {
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryFilterValue>('all')
 
-  // Filtra os produtos de acordo com a categoria selecionada.
-  const filteredProducts = products.filter(
-    (product) =>
-      selectedCategory === 'all' ||
-      product.category === selectedCategory,
-  )
+  // Guarda o texto digitado na busca (atualiza a cada tecla).
+  const [searchTerm, setSearchTerm] = useState('')
+
+  // Versão "atrasada" do texto de busca — só atualiza 400ms
+  // depois que o usuário parar de digitar (debounce).
+  const debouncedSearchTerm = useDebounce(searchTerm, 400)
+
+  // Filtra os produtos por categoria E por nome (busca).
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory =
+      selectedCategory === 'all' || product.category === selectedCategory
+
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(debouncedSearchTerm.toLowerCase())
+
+    return matchesCategory && matchesSearch
+  })
 
   // Função para levar o usuário até a seção de produtos.
   function scrollToProducts() {
@@ -225,6 +238,21 @@ function Home() {
 
 
         {/* =============================== */}
+        {/* BUSCA */}
+        {/* =============================== */}
+
+        <div className="mb-4">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Buscar produtos pelo nome..."
+            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+        </div>
+
+
+        {/* =============================== */}
         {/* FILTRO POR CATEGORIA */}
         {/* =============================== */}
 
@@ -300,12 +328,15 @@ function Home() {
               </h3>
 
               <p className="mt-2 text-sm text-slate-500">
-                Não encontramos produtos nessa categoria.
+                Não encontramos produtos com esse filtro ou busca.
               </p>
 
               <button
                 type="button"
-                onClick={() => setSelectedCategory('all')}
+                onClick={() => {
+                  setSelectedCategory('all')
+                  setSearchTerm('')
+                }}
                 className="mt-5 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
               >
                 Ver todos os produtos
