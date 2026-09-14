@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { Product } from '../../types'
 
 interface ProductCardProps {
@@ -11,7 +12,10 @@ function ProductCard({ product }: ProductCardProps) {
   })
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
+    <Link
+      to={`/products/${product.id}`}
+      className="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:shadow-md"
+    >
       <img
         src={product.imageUrl}
         alt={product.name}
@@ -28,7 +32,7 @@ function ProductCard({ product }: ProductCardProps) {
           {formattedPrice}
         </p>
       </div>
-    </div>
+    </Link>
   )
 }
 

@@ -4,6 +4,7 @@ import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
 import Home from '../pages/Home'
 import Orders from '../pages/orders/Orders'
+import ProductDetail from '../pages/products/ProductDetail'
 import { AdminRoute } from './AdminRoute'
 import { ProtectedRoute } from './ProtectedRoute'
 
@@ -13,6 +14,7 @@ export function AppRouter() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/products/:id" element={<ProductDetail />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/orders" element={<Orders />} />
