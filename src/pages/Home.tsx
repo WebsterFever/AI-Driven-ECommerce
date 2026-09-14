@@ -1,43 +1,38 @@
-import { Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import ProductCard from '../components/products/ProductCard'
+import { useProducts } from '../hooks/useProducts'
 
 function Home() {
-  const { user, loadingUser, loadingRole, logout } = useAuth()
-
-  if (loadingUser || loadingRole) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <p className="text-sm text-slate-500">Carregando...</p>
-      </div>
-    )
-  }
-
-  if (!user) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-slate-50 px-4 text-center">
-        <h1 className="text-2xl font-bold text-slate-900">Você não está logado</h1>
-        <Link to="/login" className="font-medium text-blue-600 hover:underline">
-          Ir para login
-        </Link>
-      </div>
-    )
-  }
+  const { products, loading, error } = useProducts()
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-slate-50 px-4 text-center">
-      <h1 className="text-2xl font-bold text-slate-900">
-        Bem-vindo, {user.displayName || user.email}
-      </h1>
-      <p className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
-        role: {user.role}
-      </p>
-      <button
-        type="button"
-        onClick={() => logout()}
-        className="mt-4 rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-900"
-      >
-        Sair
-      </button>
+    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+      <h1 className="mb-6 text-2xl font-bold text-slate-900">Catálogo</h1>
+
+      {loading && (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="h-56 animate-pulse rounded-lg bg-slate-200" />
+          ))}
+        </div>
+      )}
+
+      {!loading && error && (
+        <p className="rounded-lg bg-red-50 p-4 text-sm text-red-600">{error}</p>
+      )}
+
+      {!loading && !error && products.length === 0 && (
+        <p className="rounded-lg bg-slate-100 p-4 text-sm text-slate-500">
+          Não encontramos produtos.
+        </p>
+      )}
+
+      {!loading && !error && products.length > 0 && (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
