@@ -1,7 +1,13 @@
+import Header from './components/layout/Header'
 import { AppRouter } from './routes/AppRouter'
 
 function App() {
-  return <AppRouter />
+  return (
+    <>
+      <Header />
+      <AppRouter />
+    </>
+  )
 }
 
 export default App

@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
+import Cart from '../pages/cart/Cart'
 import Home from '../pages/Home'
 import Orders from '../pages/orders/Orders'
 import ProductDetail from '../pages/products/ProductDetail'
@@ -17,6 +18,7 @@ export function AppRouter() {
       <Route path="/products/:id" element={<ProductDetail />} />
 
       <Route element={<ProtectedRoute />}>
+        <Route path="/cart" element={<Cart />} />
         <Route path="/orders" element={<Orders />} />
       </Route>
 
