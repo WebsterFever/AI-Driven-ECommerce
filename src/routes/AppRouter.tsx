@@ -3,6 +3,8 @@ import AdminDashboard from '../pages/admin/AdminDashboard'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
 import Cart from '../pages/cart/Cart'
+import Checkout from '../pages/cart/Checkout'
+import OrderConfirmation from '../pages/cart/OrderConfirmation'
 import Home from '../pages/Home'
 import Orders from '../pages/orders/Orders'
 import ProductDetail from '../pages/products/ProductDetail'
@@ -19,6 +21,8 @@ export function AppRouter() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout/confirmation" element={<OrderConfirmation />} />
         <Route path="/orders" element={<Orders />} />
       </Route>
 

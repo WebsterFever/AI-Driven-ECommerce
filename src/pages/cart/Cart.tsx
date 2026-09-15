@@ -79,13 +79,21 @@ function Cart() {
 
       <div className="mt-6 flex flex-col items-end gap-3 border-t border-slate-200 pt-4">
         <p className="text-lg font-bold text-slate-900">Total: {formattedTotal}</p>
-        <button
-          type="button"
-          onClick={clearCart}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-        >
-          Limpar carrinho
-        </button>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={clearCart}
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Limpar carrinho
+          </button>
+          <Link
+            to="/checkout"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+          >
+            Finalizar compra
+          </Link>
+        </div>
       </div>
     </div>
   )
