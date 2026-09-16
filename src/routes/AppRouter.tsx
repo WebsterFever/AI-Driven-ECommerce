@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import AdminDashboard from '../pages/admin/AdminDashboard'
+import AdminLayout from '../components/layout/AdminLayout'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
 import Cart from '../pages/cart/Cart'
@@ -27,7 +28,9 @@ export function AppRouter() {
       </Route>
 
       <Route element={<AdminRoute />}>
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+        </Route>
       </Route>
     </Routes>
   )
