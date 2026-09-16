@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import AdminLayout from '../components/layout/AdminLayout'
+import AdminOrders from '../pages/admin/AdminOrders'
 import AdminProducts from '../pages/admin/AdminProducts'
 import ProductEdit from '../pages/admin/ProductEdit'
 import ProductNew from '../pages/admin/ProductNew'
@@ -36,6 +37,7 @@ export function AppRouter() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="products/new" element={<ProductNew />} />
           <Route path="products/:id/edit" element={<ProductEdit />} />
+          <Route path="orders" element={<AdminOrders />} />
         </Route>
       </Route>
     </Routes>
