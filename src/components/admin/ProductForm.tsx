@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent } from 'react'
+import { uploadProductImage } from '../../services/storage/upload.service'
 import type { Category, Product } from '../../types'
 
 const CATEGORIES: Category[] = ['electronics', 'clothing', 'home', 'sports', 'books', 'other']
@@ -23,13 +24,41 @@ function ProductForm({ initialValues, submitLabel, onSubmit }: ProductFormProps)
   const [price, setPrice] = useState(initialValues ? String(initialValues.price) : '')
   const [category, setCategory] = useState<Category>(initialValues?.category ?? 'electronics')
   const [imageUrl, setImageUrl] = useState(initialValues?.imageUrl ?? '')
+  const [uploadingImage, setUploadingImage] = useState(false)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+
+    if (!file) {
+      return
+    }
+
+    setUploadingImage(true)
+    setError(null)
+
+    try {
+      const url = await uploadProductImage(file)
+      setImageUrl(url)
+    } catch (err) {
+      console.error('Erro ao enviar imagem:', err)
+      setError('Não foi possível enviar a imagem. Tente novamente.')
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setError(null)
+
+    if (!imageUrl) {
+      setError('Envie uma imagem antes de salvar o produto.')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -102,20 +131,27 @@ function ProductForm({ initialValues, submitLabel, onSubmit }: ProductFormProps)
         </select>
       </label>
 
-      <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
-        URL da imagem
+      <label className="flex flex-col gap-2 text-sm font-medium text-slate-700">
+        Imagem do produto
         <input
-          type="text"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          required
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="text-sm text-slate-600"
         />
+        {uploadingImage && <p className="text-xs text-slate-500">Enviando imagem...</p>}
+        {imageUrl && !uploadingImage && (
+          <img
+            src={imageUrl}
+            alt="Pré-visualização"
+            className="h-24 w-24 rounded-lg border border-slate-200 object-cover"
+          />
+        )}
       </label>
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || uploadingImage}
         className="rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? 'Salvando...' : submitLabel}
