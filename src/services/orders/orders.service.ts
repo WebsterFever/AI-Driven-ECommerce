@@ -1,8 +1,19 @@
-import { collection, doc, setDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, orderBy, query, setDoc, where } from 'firebase/firestore'
 import type { CartItem, Order, OrderItem } from '../../types'
 import { db } from '../firebase/config'
 
 const ordersCollection = collection(db, 'orders')
+
+export async function getUserOrders(userId: string): Promise<Order[]> {
+  const userOrdersQuery = query(
+    ordersCollection,
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc'),
+  )
+
+  const snapshot = await getDocs(userOrdersQuery)
+  return snapshot.docs.map((document) => document.data() as Order)
+}
 
 export async function createOrder(userId: string, items: CartItem[]): Promise<Order> {
   const orderRef = doc(ordersCollection)
