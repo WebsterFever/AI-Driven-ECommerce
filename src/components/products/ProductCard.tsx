@@ -11,6 +11,8 @@ function ProductCard({ product }: ProductCardProps) {
     currency: 'BRL',
   })
 
+  const inStock = product.stock > 0
+
   return (
     <Link
       to={`/products/${product.id}`}
@@ -28,6 +30,9 @@ function ProductCard({ product }: ProductCardProps) {
         <h3 className="text-sm font-semibold text-slate-900 sm:text-base">
           {product.name}
         </h3>
+        <p className={`text-sm font-medium ${inStock ? 'text-green-600' : 'text-red-600'}`}>
+          {inStock ? `Stock: ${product.stock}` : 'Out of stock'}
+        </p>
         <p className="mt-auto text-base font-bold text-blue-600">
           {formattedPrice}
         </p>
