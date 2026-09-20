@@ -1,14 +1,12 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '../../contexts/AuthContext'
-import { useOrders } from '../../hooks/useOrders'
+import { useOrdersContext } from '../../contexts/OrdersContext'
 import type { OrderStatus } from '../../types'
 
 const STATUS_LABELS: Record<OrderStatus, string> = { pending: 'Pending', processing: 'Processing', completed: 'Completed', cancelled: 'Cancelled' }
 const STATUS_STYLES: Record<OrderStatus, string> = { pending: 'bg-yellow-100 text-yellow-700', processing: 'bg-blue-100 text-blue-700', completed: 'bg-green-100 text-green-700', cancelled: 'bg-red-100 text-red-700' }
 
 function Orders() {
-  const { user } = useAuth()
-  const { orders, loading, error } = useOrders(user?.uid)
+  const { orders, loading, error } = useOrdersContext()
   return <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
     <h1 className="mb-6 text-2xl font-bold text-slate-900">My Orders</h1>
     {loading && <p className="text-sm text-slate-500">Loading...</p>}
