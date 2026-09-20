@@ -21,7 +21,9 @@ function Checkout() {
       navigate('/checkout/confirmation', { state: { order } })
     } catch (err) {
       console.error('Error creating order:', err)
-      setError('Unable to complete your order. Please try again.')
+      const message = err instanceof Error ? err.message : ''
+      const isStockError = message.startsWith('Insufficient stock') || message.startsWith('Product "')
+      setError(isStockError ? message : 'Unable to complete your order. Please try again.')
     } finally { setLoading(false) }
   }
 

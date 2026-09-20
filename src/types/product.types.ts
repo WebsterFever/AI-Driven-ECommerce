@@ -13,6 +13,7 @@ export interface Product {
   price: number
   category: Category
   imageUrl: string
+  stock: number
   createdAt: string
   updatedAt: string
 }
