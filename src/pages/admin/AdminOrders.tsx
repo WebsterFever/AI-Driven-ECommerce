@@ -10,15 +10,22 @@ type StatusFilterValue = OrderStatus | 'all'
 const STATUS_FILTERS: { value: StatusFilterValue; label: string }[] = [{ value: 'all', label: 'All' }, ...ALL_STATUSES.map((status) => ({ value: status, label: STATUS_LABELS[status] }))]
 
 function AdminOrders() {
-  const { orders, loading, error } = useAllOrders()
+  const { orders, loading, error, reloadOrders } = useAllOrders()
   const [statusFilter, setStatusFilter] = useState<StatusFilterValue>('all')
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const filteredOrders = orders.filter((order) => statusFilter === 'all' || order.status === statusFilter)
 
   async function handleStatusChange(orderId: string, newStatus: OrderStatus) {
     setUpdatingId(orderId)
-    try { await updateOrderStatus(orderId, newStatus); window.location.reload() }
-    catch (err) { console.error('Error updating status:', err); window.alert('Unable to update the status.'); setUpdatingId(null) }
+    try {
+      await updateOrderStatus(orderId, newStatus)
+      await reloadOrders()
+    } catch (err) {
+      console.error('Error updating status:', err)
+      window.alert('Unable to update the status.')
+    } finally {
+      setUpdatingId(null)
+    }
   }
 
   return <div>
