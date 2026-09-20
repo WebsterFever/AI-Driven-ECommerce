@@ -356,6 +356,7 @@ npm run lint
 npm run preview
 npm test
 npm run test:watch
+npm run test:coverage
 ```
 
 ### Script Purpose
@@ -366,6 +367,7 @@ npm run test:watch
 - `npm run preview` — previews the production build locally.
 - `npm test` — runs Vitest once.
 - `npm run test:watch` — runs Vitest in watch mode.
+- `npm run test:coverage` — runs the test suite and generates a coverage report.
 
 ## Testing Strategy
 
@@ -380,6 +382,10 @@ Testing focuses on important application behavior such as:
 - Shopping cart flows
 - Checkout behavior
 - Authentication-related behavior
+- Order creation and status updates
+- Stock validation and Firestore transaction behavior
+- Product service CRUD behavior
+- ProductsContext loading and error states
 
 Firebase and AWS integrations can be mocked so automated tests do not depend on live external services.
 
@@ -470,8 +476,8 @@ The project requirements include documenting meaningful AI-assisted development 
 | Technical decision | Compared client-side uploads with S3 presigned URLs | Chose server-generated presigned URLs so permanent AWS credentials remain server-side. |
 | Testing | Reviewed reducer, hook, provider, and integration test cases | Learned to test behavior in isolation and mock Firebase/AWS dependencies. |
 | Problem solving | Investigated Firestore permission errors and role rules | Strengthened Firestore rules to prevent role self-promotion and restrict admin order updates. |
-
-> For the final academic submission, this table should reflect the real prompts, lessons, and decisions made during development.
+| Stock validation | Used AI to review the checkout/order flow after project feedback and identify the risk of validating stock only in the UI | Moved stock validation into `createOrder` and used a Firestore transaction so stock is read at purchase time, insufficient stock cancels the operation, and stock reduction plus order creation happen atomically. |
+| Concurrency review | Asked AI to evaluate what happens if two customers try to buy the last unit at the same time | Learned why a Firestore transaction is safer than separate reads/writes: Firestore retries on concurrent changes and prevents an order from being committed with stale stock. |
 
 ## Security Notes
 
