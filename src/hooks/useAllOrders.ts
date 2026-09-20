@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { getAllOrders } from '../services/orders/orders.service'
 import type { Order } from '../types'
 
@@ -7,36 +7,24 @@ export function useAllOrders() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    let cancelled = false
+  const reloadOrders = useCallback(async () => {
+    setLoading(true)
+    setError(null)
 
-    async function loadOrders() {
-      setLoading(true)
-      setError(null)
-
-      try {
-        const data = await getAllOrders()
-        if (!cancelled) {
-          setOrders(data)
-        }
-      } catch (err) {
-        console.error('Erro ao buscar pedidos:', err)
-        if (!cancelled) {
-          setError('Não foi possível carregar os pedidos.')
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false)
-        }
-      }
-    }
-
-    loadOrders()
-
-    return () => {
-      cancelled = true
+    try {
+      const data = await getAllOrders()
+      setOrders(data)
+    } catch (err) {
+      console.error('Error loading orders:', err)
+      setError('Unable to load orders.')
+    } finally {
+      setLoading(false)
     }
   }, [])
 
-  return { orders, loading, error }
+  useEffect(() => {
+    void reloadOrders()
+  }, [reloadOrders])
+
+  return { orders, loading, error, reloadOrders }
 }
