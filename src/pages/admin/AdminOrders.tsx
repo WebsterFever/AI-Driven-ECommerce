@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { useAllOrders } from '../../hooks/useAllOrders'
-import { updateOrderStatus } from '../../services/orders/orders.service'
+import { useOrdersContext } from '../../contexts/OrdersContext'
 import type { OrderStatus } from '../../types'
 
 const STATUS_LABELS: Record<OrderStatus, string> = { pending: 'Pending', processing: 'Processing', completed: 'Completed', cancelled: 'Cancelled' }
@@ -10,7 +9,7 @@ type StatusFilterValue = OrderStatus | 'all'
 const STATUS_FILTERS: { value: StatusFilterValue; label: string }[] = [{ value: 'all', label: 'All' }, ...ALL_STATUSES.map((status) => ({ value: status, label: STATUS_LABELS[status] }))]
 
 function AdminOrders() {
-  const { orders, loading, error, reloadOrders } = useAllOrders()
+  const { orders, loading, error, changeOrderStatus } = useOrdersContext()
   const [statusFilter, setStatusFilter] = useState<StatusFilterValue>('all')
   const [updatingId, setUpdatingId] = useState<string | null>(null)
   const filteredOrders = orders.filter((order) => statusFilter === 'all' || order.status === statusFilter)
@@ -18,8 +17,7 @@ function AdminOrders() {
   async function handleStatusChange(orderId: string, newStatus: OrderStatus) {
     setUpdatingId(orderId)
     try {
-      await updateOrderStatus(orderId, newStatus)
-      await reloadOrders()
+      await changeOrderStatus(orderId, newStatus)
     } catch (err) {
       console.error('Error updating status:', err)
       window.alert('Unable to update the status.')
