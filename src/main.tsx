@@ -6,6 +6,7 @@ import App from './App.tsx'
 import { AuthProvider } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
 import { OrdersProvider } from './contexts/OrdersContext'
+import { ProductsProvider } from './contexts/ProductsContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <CartProvider>
           <OrdersProvider>
-            <App />
+            <ProductsProvider>
+              <App />
+            </ProductsProvider>
           </OrdersProvider>
         </CartProvider>
       </AuthProvider>
